@@ -1,26 +1,22 @@
 import $ from 'jquery';
-import { once } from 'ember-runloop';
+import { scheduleOnce, once } from 'ember-runloop';
 import { isBlank, typeOf } from 'ember-utils';
 import get from 'ember-metal/get';
-import set from 'ember-metal/set';
 
 class ModalHandler {
-  constructor(route, modalNameBinding, modalParamsBinding) {
+  constructor(route, controller, modalNameBinding, modalParamsBinding) {
     this.route = route;
+    this.controller = controller;
     this.modalNameBinding = modalNameBinding;
     this.modalParamsBinding = modalParamsBinding;
   }
 
-  isModalOpen() {
-    return !isBlank(this.getModalName());
-  }
-
   getModalName() {
-    return get(this.route, this.modalNameBinding);
+    return get(this.controller, this.modalNameBinding);
   }
 
   getModalParams() {
-    const params = get(this.route, this.modalParamsBinding);
+    const params = get(this.controller, this.modalParamsBinding);
     return isBlank(params) ? undefined : JSON.parse(atob(params));
   }
 
@@ -41,8 +37,6 @@ class ModalHandler {
 
   close() {
     $(document.body).removeClass('modal-open');
-    set(this.route, this.modalParamsBinding, null);
-    set(this.route, this.modalNameBinding, null);
     this.route.disconnectOutlet({
       outlet: 'modal',
       parentView: 'application'
@@ -50,19 +44,19 @@ class ModalHandler {
   }
 
   refresh() {
-    if (this.isModalOpen()) {
-      this.open();
-    } else {
+    if (isBlank(this.getModalName())) {
       this.close();
+    } else {
+      this.open();
     }
   }
 }
 
-export default function registerModalListener(route, modalNameBinding, modalParamsBinding) {
-  const handler = new ModalHandler(route, modalNameBinding, modalParamsBinding);
+export default function registerModalListener(route, controller, modalNameBinding, modalParamsBinding) {
+  const handler = new ModalHandler(route, controller, modalNameBinding, modalParamsBinding);
   function refresh() {
     handler.refresh();
   }
-  route.addObserver(modalNameBinding, modalParamsBinding, () => once(route, refresh));
-  refresh();
+  controller.addObserver(modalNameBinding, modalParamsBinding, () => once(route, refresh));
+  scheduleOnce('afterRender', refresh);
 }

@@ -1,49 +1,53 @@
 import sinon from 'sinon';
 import registerListener from 'bs-modal/register-listener';
 import { module, test } from 'qunit';
+import run from 'ember-runloop';
 
 module('Unit | Utility | register-listener');
 
 test('it initializes a handler object and closes the modal', function(assert) {
   const route = {
-    controller: {},
-    addObserver: sinon.stub(),
     disconnectOutlet: sinon.stub(),
   };
-  registerListener(route, 'controller.modal', 'controller.modalParams');
+  const controller = {
+    addObserver: sinon.stub(),
+  };
 
-  assert.equal(route.addObserver.args.length, 1);
-  assert.deepEqual(route.addObserver.args[0].slice(0, 2), [
-    'controller.modal', 'controller.modalParams',
+  run(() => {
+    registerListener(route, controller, 'modal', 'modalParams');
+  });
+
+  assert.equal(controller.addObserver.args.length, 1);
+  assert.deepEqual(controller.addObserver.args[0].slice(0, 2), [
+    'modal', 'modalParams',
   ]);
   assert.equal(route.disconnectOutlet.args.length, 1);
   assert.deepEqual(route.disconnectOutlet.args[0], [{
     'outlet': 'modal', 'parentView': 'application',
   }]);
-  assert.deepEqual(route.controller, {
-    modal: null,
-    modalParams: null
-  });
 });
 
 test('it initializes a handler object and opens the modal', function(assert) {
   const modalController = { setupController: sinon.stub() };
   const route = {
-    controller: {
-      modal: 'cool-guy',
-      modalParams: 'eyJuYW1lIjoiSm9lIEJhbmFuYSJ9',
-    },
-    addObserver: sinon.stub(),
     controllerFor: sinon.stub(),
     render: sinon.stub(),
   };
 
-  route.controllerFor.returns(modalController);
-  registerListener(route, 'controller.modal', 'controller.modalParams');
+  const controller = {
+    modal: 'cool-guy',
+    modalParams: 'eyJuYW1lIjoiSm9lIEJhbmFuYSJ9',
+    addObserver: sinon.stub(),
+  };
 
-  assert.equal(route.addObserver.args.length, 1);
-  assert.deepEqual(route.addObserver.args[0].slice(0, 2), [
-    'controller.modal', 'controller.modalParams',
+  route.controllerFor.returns(modalController);
+  run(() => {
+    registerListener(route, controller, 'modal', 'modalParams');
+  });
+
+  assert.equal(controller.addObserver.args.length, 1);
+  assert.deepEqual(controller.addObserver.args[0].slice(0, 2), [
+    'modal', 'modalParams',
   ]);
   assert.deepEqual(route.controllerFor.args, [['cool-guy']]);
   assert.deepEqual(route.render.args, [[
