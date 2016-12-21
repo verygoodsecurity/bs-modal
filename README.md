@@ -7,6 +7,26 @@ Whenever the query string parameters are updated with a path to a controller the
 controller is rendered in the `modal` outlet and the additional modalParams are
 passed to the controller via a call to the `setupController` method.
 
+## Usage
+
+Binding the query string parameters:
+
+```javascript
+// application/route.js
+import EmRoute from 'ember-route';
+import { generateRouteMixin } from 'bs-modal/utils';
+
+export default EmRoute.extend(generateRouteMixin('modal', 'modalParams'), {});
+```
+
+Using the `modal-params` helper:
+
+```hbs
+{{link-to 'Close modal' (modal-params) class="btn btn-sm"}}
+
+{{link-to 'View user information' (modal-params 'modals/user-information' userId=model.id) class="btn btn-sm"}}
+```
+
 ## Installation
 
 * `git clone <repository-url>` this repository
