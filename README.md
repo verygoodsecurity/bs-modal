@@ -22,7 +22,9 @@ export default EmRoute.extend(generateRouteMixin('modal', 'modalParams'), {});
 Using the `modal-params` helper:
 
 ```hbs
-{{link-to 'View user information' (modal-params 'modals/user-information' userId=model.id) class="btn btn-sm grey-300"}}
+{{link-to 'Close modal' (modal-params) class="btn btn-sm"}}
+
+{{link-to 'View user information' (modal-params 'modals/user-information' userId=model.id) class="btn btn-sm"}}
 ```
 
 ## Installation
