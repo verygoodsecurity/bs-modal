@@ -1,0 +1,17 @@
+machine:
+  node:
+    version: 6.8.0
+
+dependencies:
+  pre:
+    - npm config set spin false
+    - npm install -g npm@^3
+    - npm install bower
+
+  override:
+    - npm install
+    - ./node_modules/.bin/bower install
+
+test:
+  override:
+    - ./node_modules/.bin/ember test
