@@ -1,6 +1,11 @@
-# Bs-modal
+# bs-modal
 
-This README outlines the details of collaborating on this Ember addon.
+[![CircleCI](https://circleci.com/gh/cohitre/bs-modal.svg?style=svg)](https://circleci.com/gh/cohitre/bs-modal)
+
+This is an ember addon to drive modal windows by the query string parameters.
+Whenever the query string parameters are updated with a path to a controller the
+controller is rendered in the `modal` outlet and the additional modalParams are
+passed to the controller via a call to the `setupController` method.
 
 ## Installation
 
