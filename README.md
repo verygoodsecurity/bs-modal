@@ -9,7 +9,7 @@ passed to the controller via a call to the `setupController` method.
 
 ## Usage
 
-1. Bind the query string parameters
+Binding the query string parameters
 
 ```javascript
 // application/route.js
@@ -19,7 +19,7 @@ import { generateRouteMixin } from 'bs-modal/utils';
 export default EmRoute.extend(generateRouteMixin('modal', 'modalParams'), {});
 ```
 
-2. Link to a modal
+Using the `modal-params` helper
 
 ```hbs
 {{link-to 'View uer information' (modal-params 'modals/user-information' userId=model.id) class="btn btn-sm grey-300"}}
